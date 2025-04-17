@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  usersId       Int             @id @default(autoincrement())
+  name          String
+  email         String          @unique
+  password      String
+  profileImage  String?
+  role          Role?
+  events        Events[]        @relation("userEvents")
+  transactions  Transactions[]
+  points        Points[]
+  couponds      Couponds[]
+  notifications Notifications[]
+  referralCode  String?         @unique
+  referredBy    String?
+  referredUsers Referral[]      @relation("referrer")
+  referrals     Referral[]      @relation("referredUser")
+  createdAt     DateTime        @default(now())
+}
+
+model Events {
+  eventId           Int      @id @default(autoincrement())
+  promotorId        Int
+  nameEvents        String
+  categoryEvents    String
+  priceEvents       String
+  descriptionEvents String
+  locationEvents    String
+  startDateEvents   DateTime
+  endDateEvents     DateTime
+  availableSeats    Int
+  createdAt         DateTime @default(now())
+
+  promotor     Users          @relation("userEvents", fields: [promotorId], references: [usersId])
+  transactions Transactions[]
+  tickets      Tickets[]
+  vouchers     Vouchers[]
+}
+
+model Tickets {
+  ticketId          Int      @id @default(autoincrement())
+  eventId           Int
+  ticketType        String
+  ticketPrice       String
+  quantityAvailable Int
+  createdAt         DateTime @default(now())
+
+  event        Events         @relation(fields: [eventId], references: [eventId])
+  transactions Transactions[]
+}
+
+model Transactions {
+  transactionId     Int      @id @default(autoincrement())
+  userId            Int
+  eventId           Int
+  ticketId          Int
+  ticketQuantity    Int
+  totalPrice        String
+  pointUsed         Int
+  coupondId         Int?
+  voucherId         Int?
+  statusTransaction String
+  createdAt         DateTime @default(now())
+  expiredAt         DateTime
+
+  user    Users     @relation(fields: [userId], references: [usersId])
+  event   Events    @relation(fields: [eventId], references: [eventId])
+  ticket  Tickets   @relation(fields: [ticketId], references: [ticketId])
+  coupond Couponds? @relation(fields: [coupondId], references: [coupondId])
+  voucher Vouchers? @relation(fields: [voucherId], references: [voucherId])
+}
+
+model Couponds {
+  coupondId     Int      @id @default(autoincrement())
+  userId        Int
+  couponAmmount Int
+  expiredAt     DateTime
+  createdAt     DateTime @default(now())
+
+  Users        Users          @relation(fields: [userId], references: [usersId])
+  transactions Transactions[]
+}
+
+model Vouchers {
+  voucherId      Int      @id @default(autoincrement())
+  eventId        Int
+  code           String
+  voucherAmmount Int
+  expiredAt      DateTime
+  createdAt      DateTime @default(now())
+
+  event        Events         @relation(fields: [eventId], references: [eventId])
+  transactions Transactions[]
+}
+
+model Referral {
+  referralId     Int      @id @default(autoincrement())
+  referrerId     Int
+  referredUserId Int
+  rewardCouponId Int
+  rewardPoints   Int
+  createdAt      DateTime @default(now())
+
+  referrer     Users @relation("referrer", fields: [referrerId], references: [usersId])
+  referredUser Users @relation("referredUser", fields: [referredUserId], references: [usersId])
+}
+
+model Points {
+  pointId       Int      @id @default(autoincrement())
+  userId        Int
+  pointsAmmount Int
+  createdAt     DateTime @default(now())
+  expiredAt     DateTime
+
+  Users Users? @relation(fields: [userId], references: [usersId])
+}
+
+model Notifications {
+  notificationId Int      @id @default(autoincrement())
+  userId         Int
+  title          String
+  message        String
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  Users Users? @relation(fields: [userId], references: [usersId])
+}
+
+enum Role {
+  USER
+  PROMOTOR
+}
