@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  // output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,26 +14,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  usersId       Int             @id @default(autoincrement())
+model User {
+  usersId       Int            @id @default(autoincrement())
   name          String
-  email         String          @unique
+  email         String         @unique
   password      String
   profileImage  String?
   role          Role?
-  events        Events[]        @relation("userEvents")
-  transactions  Transactions[]
-  points        Points[]
-  couponds      Couponds[]
-  notifications Notifications[]
-  referralCode  String?         @unique
+  events        Event[]        @relation("userEvents")
+  transactions  Transaction[]
+  points        Point[]
+  couponds      Coupond[]
+  notifications Notification[]
+  referralCode  String?        @unique
   referredBy    String?
-  referredUsers Referral[]      @relation("referrer")
-  referrals     Referral[]      @relation("referredUser")
-  createdAt     DateTime        @default(now())
+  referredUsers Referral[]     @relation("referrer")
+  referrals     Referral[]     @relation("referredUser")
+  createdAt     DateTime       @default(now())
 }
 
-model Events {
+model Event {
   eventId           Int      @id @default(autoincrement())
   promotorId        Int
   nameEvents        String
@@ -46,13 +46,13 @@ model Events {
   availableSeats    Int
   createdAt         DateTime @default(now())
 
-  promotor     Users          @relation("userEvents", fields: [promotorId], references: [usersId])
-  transactions Transactions[]
-  tickets      Tickets[]
-  vouchers     Vouchers[]
+  promotor     User          @relation("userEvents", fields: [promotorId], references: [usersId])
+  transactions Transaction[]
+  tickets      Ticket[]
+  vouchers     Voucher[]
 }
 
-model Tickets {
+model Ticket {
   ticketId          Int      @id @default(autoincrement())
   eventId           Int
   ticketType        String
@@ -60,11 +60,11 @@ model Tickets {
   quantityAvailable Int
   createdAt         DateTime @default(now())
 
-  event        Events         @relation(fields: [eventId], references: [eventId])
-  transactions Transactions[]
+  event        Event         @relation(fields: [eventId], references: [eventId])
+  transactions Transaction[]
 }
 
-model Transactions {
+model Transaction {
   transactionId     Int      @id @default(autoincrement())
   userId            Int
   eventId           Int
@@ -78,25 +78,25 @@ model Transactions {
   createdAt         DateTime @default(now())
   expiredAt         DateTime
 
-  user    Users     @relation(fields: [userId], references: [usersId])
-  event   Events    @relation(fields: [eventId], references: [eventId])
-  ticket  Tickets   @relation(fields: [ticketId], references: [ticketId])
-  coupond Couponds? @relation(fields: [coupondId], references: [coupondId])
-  voucher Vouchers? @relation(fields: [voucherId], references: [voucherId])
+  user    User     @relation(fields: [userId], references: [usersId])
+  event   Event    @relation(fields: [eventId], references: [eventId])
+  ticket  Ticket   @relation(fields: [ticketId], references: [ticketId])
+  coupond Coupond? @relation(fields: [coupondId], references: [coupondId])
+  voucher Voucher? @relation(fields: [voucherId], references: [voucherId])
 }
 
-model Couponds {
+model Coupond {
   coupondId     Int      @id @default(autoincrement())
   userId        Int
   couponAmmount Int
   expiredAt     DateTime
   createdAt     DateTime @default(now())
 
-  Users        Users          @relation(fields: [userId], references: [usersId])
-  transactions Transactions[]
+  Users        User          @relation(fields: [userId], references: [usersId])
+  transactions Transaction[]
 }
 
-model Vouchers {
+model Voucher {
   voucherId      Int      @id @default(autoincrement())
   eventId        Int
   code           String
@@ -104,8 +104,8 @@ model Vouchers {
   expiredAt      DateTime
   createdAt      DateTime @default(now())
 
-  event        Events         @relation(fields: [eventId], references: [eventId])
-  transactions Transactions[]
+  event        Event         @relation(fields: [eventId], references: [eventId])
+  transactions Transaction[]
 }
 
 model Referral {
@@ -116,21 +116,21 @@ model Referral {
   rewardPoints   Int
   createdAt      DateTime @default(now())
 
-  referrer     Users @relation("referrer", fields: [referrerId], references: [usersId])
-  referredUser Users @relation("referredUser", fields: [referredUserId], references: [usersId])
+  referrer     User @relation("referrer", fields: [referrerId], references: [usersId])
+  referredUser User @relation("referredUser", fields: [referredUserId], references: [usersId])
 }
 
-model Points {
+model Point {
   pointId       Int      @id @default(autoincrement())
   userId        Int
   pointsAmmount Int
   createdAt     DateTime @default(now())
   expiredAt     DateTime
 
-  Users Users? @relation(fields: [userId], references: [usersId])
+  Users User? @relation(fields: [userId], references: [usersId])
 }
 
-model Notifications {
+model Notification {
   notificationId Int      @id @default(autoincrement())
   userId         Int
   title          String
@@ -138,7 +138,7 @@ model Notifications {
   isRead         Boolean  @default(false)
   createdAt      DateTime @default(now())
 
-  Users Users? @relation(fields: [userId], references: [usersId])
+  Users User? @relation(fields: [userId], references: [usersId])
 }
 
 enum Role {

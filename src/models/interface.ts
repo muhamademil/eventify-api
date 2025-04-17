@@ -3,8 +3,8 @@ export interface UserInput {
   email: string;
   password: string;
   role: "USER" | "PROMOTOR";
-  referralCode?: string;
-  referralCodeUsed?: string;
+  // referralCode?: string;
+  // referralCodeUsed?: string;
 }
 
 export interface UserPayload {

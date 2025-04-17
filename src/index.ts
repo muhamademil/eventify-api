@@ -1,5 +1,6 @@
 import express, { Application } from "express";
 import cors from "cors";
+import { UserRouter } from "./routers/user.router";
 
 class Server {
   private app: Application;
@@ -18,7 +19,7 @@ class Server {
   }
 
   private routes(): void {
-    // this.app.use('/api/RouterName', new RouterNameRouter().router);
+    this.app.use("/api", new UserRouter().router);
   }
 
   public start(): void {

@@ -5,7 +5,7 @@ import bcrypt, { hash } from "bcrypt";
 export class AuthService {
   public async login(email: string, password: string) {
     // pengecekan apakah user sudah terdaftar atau belum
-    const user = await prisma.user.findUnique({
+    const user = await prisma.users.findUnique({
       where: { email: email },
     });
 
@@ -27,13 +27,13 @@ export class AuthService {
 
     // tukar dengan token
     const token = JwtUtils.generateToken({
-      id: user.id,
+      id: user.usersId,
       name: user.name,
       role: user.role as any,
     });
 
     return {
-      id: user.id,
+      id: user.usersId,
       name: user.name,
       role: user.role,
       access_token: token,
