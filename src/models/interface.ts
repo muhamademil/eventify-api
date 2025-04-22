@@ -2,9 +2,9 @@ export interface UserInput {
   name: string;
   email: string;
   password: string;
-  role: "USER" | "PROMOTOR";
-  // referralCode?: string;
-  // referralCodeUsed?: string;
+  role?: "USER" | "PROMOTOR";
+  referralCode?: string;
+  referredBy?: string;
 }
 
 export interface UserPayload {

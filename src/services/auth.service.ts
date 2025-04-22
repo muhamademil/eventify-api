@@ -5,7 +5,7 @@ import bcrypt, { hash } from "bcrypt";
 export class AuthService {
   public async login(email: string, password: string) {
     // pengecekan apakah user sudah terdaftar atau belum
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email: email },
     });
 

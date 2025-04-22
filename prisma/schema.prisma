@@ -20,7 +20,7 @@ model User {
   email         String         @unique
   password      String
   profileImage  String?
-  role          Role?
+  role          Role?          @default(USER)
   events        Event[]        @relation("userEvents")
   transactions  Transaction[]
   points        Point[]
@@ -37,7 +37,7 @@ model Event {
   eventId           Int      @id @default(autoincrement())
   promotorId        Int
   nameEvents        String
-  categoryEvents    String
+  categoryEvents    Category
   priceEvents       String
   descriptionEvents String
   locationEvents    String
@@ -86,11 +86,13 @@ model Transaction {
 }
 
 model Coupond {
-  coupondId     Int      @id @default(autoincrement())
-  userId        Int
-  couponAmmount Int
-  expiredAt     DateTime
-  createdAt     DateTime @default(now())
+  coupondId Int      @id @default(autoincrement())
+  userId    Int
+  code      String   @unique
+  discount  Int
+  isUsed    Boolean  @default(false)
+  expiredAt DateTime
+  createdAt DateTime @default(now())
 
   Users        User          @relation(fields: [userId], references: [usersId])
   transactions Transaction[]
@@ -144,4 +146,11 @@ model Notification {
 enum Role {
   USER
   PROMOTOR
+}
+
+enum Category {
+  MUSIC
+  SPORTS
+  FOOD
+  BEAUTY
 }

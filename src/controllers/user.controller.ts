@@ -1,42 +1,28 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { UserInput } from "../models/interface";
-import { prisma } from "../prisma/client";
 
 export class UserController {
-  private userService: UserService;
+  private userService = new UserService();
 
-  constructor() {
-    this.userService = new UserService();
-  }
-
-  public async create(req: Request, res: Response): Promise<void> {
+  public register = async (req: Request, res: Response): Promise<void> => {
     try {
       const data: UserInput = req.body;
-      const result = await this.userService.create(data);
-      res.status(201).json({
-        message: "Employee created",
-        data: result,
-      });
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: error,
-      });
-    }
-  }
+      const user = await this.userService.create(data);
 
-  public async getAll(req: Request, res: Response): Promise<void> {
-    try {
-      const result = await this.userService.getAll();
-      res.status(200).json({
-        data: result,
+      res.status(201).json({
+        message: "User registered successfully",
+        data: user,
       });
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: error,
+    } catch (error: any) {
+      res.status(400).json({
+        message: "Registration failed",
+        error: error.message,
       });
     }
-  }
+  };
+
+  // Tambahan jika dibutuhkan
+  // public login = async () => {...}
+  // public getAll = async () => {...}
 }

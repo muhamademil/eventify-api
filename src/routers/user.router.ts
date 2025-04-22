@@ -16,11 +16,11 @@ export class UserRouter {
   private routes(): void {
     this.router.post(
       "/users",
-      this.userController.create.bind(this.userController)
+      this.userController.register.bind(this.userController)
     );
-    this.router.get(
-      "/users/getAll",
-      this.userController.getAll.bind(this.userController)
-    );
+    // this.router.get(
+    //   "/users",
+    //   this.userController.getAll.bind(this.userController)
+    // );
   }
 }
