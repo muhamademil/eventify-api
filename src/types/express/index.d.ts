@@ -1,9 +1,11 @@
-import { UserPayload } from "../../models/interface";
+import { User } from "@prisma/client";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: UserPayload;
+      user?: User;
     }
   }
 }
+
+export {};

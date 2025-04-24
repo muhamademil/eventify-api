@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { UserInput } from "../models/interface";
 
+import { Prisma } from "@prisma/client";
+
 export class UserController {
   private userService = new UserService();
 
@@ -22,7 +24,20 @@ export class UserController {
     }
   };
 
-  // Tambahan jika dibutuhkan
-  // public login = async () => {...}
-  // public getAll = async () => {...}
+  public async update(req: Request, res: Response): Promise<void> {
+    try {
+      const { usersId } = req.params;
+      const data: Partial<UserInput> = req.body;
+      const result = await this.userService.update(Number(usersId), data);
+      res.status(200).json({
+        message: "User updated",
+        data: result,
+      });
+    } catch (error) {
+      res.status(400).json({
+        message: "Failed to update user",
+        detail: error,
+      });
+    }
+  }
 }

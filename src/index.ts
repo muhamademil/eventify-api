@@ -1,7 +1,9 @@
 import express, { Application } from "express";
 import { UserRouter } from "./routers/user.router";
 import { AuthRouter } from "./routers/auth.router";
+import { EventRouter } from "./routers/event.router";
 
+// import "../types/express";
 import cors from "cors";
 
 class Server {
@@ -23,6 +25,7 @@ class Server {
   private routes(): void {
     this.app.use("/api", new UserRouter().router);
     this.app.use("/api", new AuthRouter().router);
+    this.app.use("/api", new EventRouter().router);
   }
 
   public start(): void {

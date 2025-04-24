@@ -3,7 +3,7 @@ import { JwtUtils } from "../lib/token.config";
 import bcrypt, { hash } from "bcrypt";
 
 export class AuthService {
-  public async login(email: string, password: string) {
+  public async login(email: string, password: string, requiredRole?: string) {
     // pengecekan apakah user sudah terdaftar atau belum
     const user = await prisma.user.findUnique({
       where: { email: email },
@@ -11,25 +11,27 @@ export class AuthService {
 
     // pengecekan pertama : kalau gagal ditolak
     if (!user) {
-      return "Invalid email or password";
+      return "Invalid credentials"; // Pesan error yang lebih aman
     }
 
-    // sebelum dicompare, hash dulu
-    const hashedPassword = (await hash(password, 10)) as any;
-
-    // kalau udah terdaftar, cek lagi passwordnya
-    const isValid = await bcrypt.compare(user.password, hashedPassword);
+    // Cek kecocokan password tanpa men-hash password baru
+    const isValid = await bcrypt.compare(password, user.password);
 
     // pengecekan kedua : kalau gagal ditolak
     if (!isValid) {
-      return "Invalid credentials";
+      return "Invalid credentials"; // Pesan error yang lebih aman
     }
 
-    // tukar dengan token
+    // Pembatasan Role jika `requiredRole` diisi
+    if (requiredRole && user.role !== requiredRole) {
+      return `Access denied: Required role is ${requiredRole}`; // Role tidak sesuai
+    }
+
+    // Tukar dengan token
     const token = JwtUtils.generateToken({
-      id: user.usersId,
+      usersId: user.usersId,
       name: user.name,
-      role: user.role as any,
+      role: user.role ?? "USER",
     });
 
     return {

@@ -5,6 +5,10 @@ export const userSchema = {
     name: zod.string().min(1),
     email: zod.string().email(),
     password: zod.string().min(6),
-    Role: zod.enum(["USER", "PROMOTOR"]),
+    referredBy: zod.string().optional(),
+    Role: zod.enum(["USER", "PROMOTOR"]).optional().default("USER"),
+  }),
+  params: zod.object({
+    usersId: zod.string(),
   }),
 };

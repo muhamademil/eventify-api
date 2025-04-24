@@ -2,10 +2,11 @@
   "compilerOptions": {
     "target": "es2016",
     "module": "commonjs",
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./node_modules/@types", "./src/types/express"]
-  }
+    "typeRoots": ["./src/types", "./node_modules/@types"]
+  },
+  "include": ["src/**/*"]
 }

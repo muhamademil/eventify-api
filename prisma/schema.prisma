@@ -31,6 +31,7 @@ model User {
   referredUsers Referral[]     @relation("referrer")
   referrals     Referral[]     @relation("referredUser")
   createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Event {
@@ -40,7 +41,7 @@ model Event {
   categoryEvents    Category
   priceEvents       String
   descriptionEvents String
-  locationEvents    String
+  locationEvents    Location
   startDateEvents   DateTime
   endDateEvents     DateTime
   availableSeats    Int
@@ -153,4 +154,11 @@ enum Category {
   SPORTS
   FOOD
   BEAUTY
+}
+
+enum Location {
+  JAKARTA
+  BANDUNG
+  SURABAYA
+  BALI
 }

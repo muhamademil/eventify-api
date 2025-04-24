@@ -79,4 +79,13 @@ export class UserService {
     // Kembalikan pengguna baru yang sudah dibuat
     return newUser;
   }
+
+  public async update(id: number, data: Partial<UserInput>) {
+    return prisma.user.update({
+      where: { usersId: id },
+      data: {
+        ...data,
+      },
+    });
+  }
 }
