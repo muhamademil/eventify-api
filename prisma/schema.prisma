@@ -57,7 +57,7 @@ model Ticket {
   ticketId          Int      @id @default(autoincrement())
   eventId           Int
   ticketType        String
-  ticketPrice       String
+  ticketPrice       Int
   quantityAvailable Int
   createdAt         DateTime @default(now())
 

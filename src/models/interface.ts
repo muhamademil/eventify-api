@@ -18,6 +18,12 @@ export interface EventInput {
   availableSeats: number;
 }
 
+export interface TicketInput {
+  title: string;
+  ticketType: string;
+  ticketPrice: number;
+}
+
 export interface EventQuery {
   search?: string;
   categoryEvents?: string;

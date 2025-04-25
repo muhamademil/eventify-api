@@ -16,11 +16,34 @@ export class EventRouter {
   }
 
   private routes(): void {
+    this.router.get(
+      "/events",
+      this.eventController.findAll.bind(this.eventController)
+    );
+    this.router.get(
+      "/events/:id",
+      this.eventController.findById.bind(this.eventController)
+    );
+
     this.router.post(
-      "/create/events",
+      "/create-events",
       AuthenticationMiddleware.verifyToken,
       ValidationMiddleware.validate({ body: eventSchema.body }),
       this.eventController.create.bind(this.eventController)
+    );
+
+    this.router.post(
+      "/delete-events",
+      AuthenticationMiddleware.verifyToken,
+      ValidationMiddleware.validate({ body: eventSchema.body }),
+      this.eventController.delete.bind(this.eventController)
+    );
+
+    this.router.post(
+      "/update-events",
+      AuthenticationMiddleware.verifyToken,
+      ValidationMiddleware.validate({ body: eventSchema.body }),
+      this.eventController.update.bind(this.eventController)
     );
   }
 }

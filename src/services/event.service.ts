@@ -43,4 +43,25 @@ export class EventService {
       take: limit,
     });
   }
+
+  public async findById(eventId: number) {
+    return prisma.event.findUnique({
+      where: { eventId },
+    });
+  }
+
+  public async update(eventId: number, data: Partial<EventInput>) {
+    return prisma.event.update({
+      where: { eventId },
+      data: {
+        ...data,
+      },
+    });
+  }
+
+  public async delete(eventId: number) {
+    return prisma.event.delete({
+      where: { eventId },
+    });
+  }
 }
