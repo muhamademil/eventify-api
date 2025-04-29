@@ -6,7 +6,7 @@ export const userSchema = {
     email: zod.string().email(),
     password: zod.string().min(6),
     referredBy: zod.string().optional(),
-    Role: zod.enum(["USER", "PROMOTOR"]).optional().default("USER"),
+    role: zod.enum(["USER", "PROMOTOR"]).optional().default("USER"),
   }),
   params: zod.object({
     usersId: zod.string(),

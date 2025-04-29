@@ -54,12 +54,12 @@ model Event {
 }
 
 model Ticket {
-  ticketId          Int      @id @default(autoincrement())
+  ticketId          Int        @id @default(autoincrement())
   eventId           Int
-  ticketType        String
+  ticketType        TicketType
   ticketPrice       Int
   quantityAvailable Int
-  createdAt         DateTime @default(now())
+  createdAt         DateTime   @default(now())
 
   event        Event         @relation(fields: [eventId], references: [eventId])
   transactions Transaction[]
@@ -161,4 +161,9 @@ enum Location {
   BANDUNG
   SURABAYA
   BALI
+}
+
+enum TicketType {
+  PAID
+  UNPAID
 }

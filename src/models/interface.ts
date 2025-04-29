@@ -2,7 +2,7 @@ export interface UserInput {
   name: string;
   email: string;
   password: string;
-  role: "USER" | "PROMOTOR";
+  role?: "USER" | "PROMOTOR";
   referralCode?: string;
   referredBy?: string;
 }
@@ -19,9 +19,10 @@ export interface EventInput {
 }
 
 export interface TicketInput {
-  title: string;
-  ticketType: string;
+  ticketType: "PAID" | "UNPAID";
   ticketPrice: number;
+  quantityAvailable: number;
+  eventId: number;
 }
 
 export interface EventQuery {

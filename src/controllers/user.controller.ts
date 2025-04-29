@@ -10,6 +10,12 @@ export class UserController {
   public register = async (req: Request, res: Response): Promise<void> => {
     try {
       const data: UserInput = req.body;
+
+      // Validasi role sebelum mengirim ke service
+      if (data.role && !["USER", "PROMOTOR"].includes(data.role)) {
+        throw new Error("Invalid role");
+      }
+
       const user = await this.userService.create(data);
 
       res.status(201).json({

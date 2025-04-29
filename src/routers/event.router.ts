@@ -2,6 +2,7 @@ import { Router } from "express";
 import { EventController } from "../controllers/event.controller";
 import { ValidationMiddleware } from "../middlewares/validation.middleware";
 import { AuthenticationMiddleware } from "../middlewares/Authentication.middleware";
+import { AuthorizationMiddleware } from "../middlewares/Authorization.middleware";
 
 import { eventSchema } from "../lib/validation/event.schema";
 
@@ -28,6 +29,7 @@ export class EventRouter {
     this.router.post(
       "/create-events",
       AuthenticationMiddleware.verifyToken,
+      AuthorizationMiddleware.allowRoles("PROMOTOR"),
       ValidationMiddleware.validate({ body: eventSchema.body }),
       this.eventController.create.bind(this.eventController)
     );
@@ -35,6 +37,7 @@ export class EventRouter {
     this.router.post(
       "/delete-events",
       AuthenticationMiddleware.verifyToken,
+      AuthorizationMiddleware.allowRoles("PROMOTOR"),
       ValidationMiddleware.validate({ body: eventSchema.body }),
       this.eventController.delete.bind(this.eventController)
     );
@@ -42,6 +45,7 @@ export class EventRouter {
     this.router.post(
       "/update-events",
       AuthenticationMiddleware.verifyToken,
+      AuthorizationMiddleware.allowRoles("PROMOTOR"),
       ValidationMiddleware.validate({ body: eventSchema.body }),
       this.eventController.update.bind(this.eventController)
     );

@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import { UserRouter } from "./routers/user.router";
 import { AuthRouter } from "./routers/auth.router";
 import { EventRouter } from "./routers/event.router";
+import { TicketRouter } from "./routers/ticket.router";
 
 // import "../types/express";
 import cors from "cors";
@@ -26,6 +27,7 @@ class Server {
     this.app.use("/api", new UserRouter().router);
     this.app.use("/api", new AuthRouter().router);
     this.app.use("/api", new EventRouter().router);
+    this.app.use("/api", new TicketRouter().router);
   }
 
   public start(): void {
