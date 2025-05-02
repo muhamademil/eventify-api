@@ -18,6 +18,12 @@ export interface EventInput {
   availableSeats: number;
 }
 
+export interface CoupondInput {
+  code: string;
+  discount: number;
+  eventId: number;
+}
+
 export interface TicketInput {
   ticketType: "PAID" | "UNPAID";
   ticketPrice: number;

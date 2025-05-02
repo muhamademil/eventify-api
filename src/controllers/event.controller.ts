@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 import { EventService } from "../services/event.service";
 import { EventInput, EventQuery } from "../models/interface";
+import { CoupondService } from "../coupond/coupond.service";
 
 export class EventController {
   private eventService = new EventService();
+  private coupondService = new CoupondService();
 
   public async create(req: Request, res: Response): Promise<void> {
     try {
       const promotor = req.user;
-      console.log("promotor:", promotor);
 
-      // Pastikan promotorId ada
       if (!promotor?.usersId) {
         res.status(400).json({
           message: "Failed to create event",
@@ -19,15 +19,48 @@ export class EventController {
         return;
       }
 
-      const data = req.body;
+      // Destructure event input dari request body
+      const {
+        nameEvents,
+        categoryEvents,
+        priceEvents,
+        descriptionEvents,
+        locationEvents,
+        startDateEvents,
+        endDateEvents,
+        availableSeats,
+        coupon, // opsional
+      } = req.body;
 
+      // Buat event dengan promotorId dari user login
       const newEvent = await this.eventService.create({
-        ...data,
+        nameEvents,
+        categoryEvents,
+        priceEvents,
+        descriptionEvents,
+        locationEvents,
+        startDateEvents,
+        endDateEvents,
+        availableSeats,
         promotorId: promotor.usersId,
       });
+
+      let createdCoupond = null;
+
+      // Jika body berisi kupon, buat kupon
+      if (coupon && coupon.discount) {
+        createdCoupond = await this.coupondService.create(
+          promotor.usersId, // Pass the userId
+          coupon.discount // Pass the discount
+        );
+      }
+
       res.status(201).json({
         message: "Event created successfully",
-        data: newEvent,
+        data: {
+          event: newEvent,
+          coupon: createdCoupond, // bisa null jika tidak dibuat
+        },
       });
     } catch (error) {
       console.error("Error creating event:", error);

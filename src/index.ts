@@ -4,7 +4,6 @@ import { AuthRouter } from "./routers/auth.router";
 import { EventRouter } from "./routers/event.router";
 import { TicketRouter } from "./routers/ticket.router";
 
-// import "../types/express";
 import cors from "cors";
 
 class Server {
@@ -19,7 +18,11 @@ class Server {
   }
 
   private middlewares(): void {
-    // this.app.use(cors());
+    this.app.use(
+      cors({  
+        origin: "*",
+      })
+    );
     this.app.use(express.json());
   }
 

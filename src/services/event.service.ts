@@ -2,13 +2,32 @@ import { prisma } from "../prisma/client";
 import { EventInput, EventQuery } from "../models/interface";
 
 export class EventService {
-  public async create(data: EventInput & { promotorId: number }) {
-    return await prisma.event.create({
-      data: {
-        ...data,
-        startDateEvents: new Date(data.startDateEvents),
-        endDateEvents: new Date(data.endDateEvents),
-      },
+  public async create(
+    data: EventInput & {
+      promotorId: number;
+      coupon?: { code: string; discount: number };
+    }
+  ) {
+    return await prisma.$transaction(async (tx) => {
+      const event = await tx.event.create({
+        data: {
+          ...data,
+          startDateEvents: new Date(data.startDateEvents),
+          endDateEvents: new Date(data.endDateEvents),
+        },
+      });
+
+      if (data.coupon) {
+        await tx.coupond.create({
+          data: {
+            code: data.coupon.code,
+            discount: data.coupon.discount,
+            eventId: event.eventId,
+          },
+        });
+      }
+
+      return event;
     });
   }
 

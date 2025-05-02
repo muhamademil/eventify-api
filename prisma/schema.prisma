@@ -24,14 +24,18 @@ model User {
   events        Event[]        @relation("userEvents")
   transactions  Transaction[]
   points        Point[]
-  couponds      Coupond[]
   notifications Notification[]
   referralCode  String?        @unique
   referredBy    String?
   referredUsers Referral[]     @relation("referrer")
   referrals     Referral[]     @relation("referredUser")
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  vouchers      Voucher[]
+
+  resetToken       String?
+  resetTokenExpire DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Event {
@@ -50,7 +54,8 @@ model Event {
   promotor     User          @relation("userEvents", fields: [promotorId], references: [usersId])
   transactions Transaction[]
   tickets      Ticket[]
-  vouchers     Voucher[]
+
+  couponds Coupond[]
 }
 
 model Ticket {
@@ -87,27 +92,31 @@ model Transaction {
 }
 
 model Coupond {
-  coupondId Int      @id @default(autoincrement())
-  userId    Int
-  code      String   @unique
+  coupondId Int       @id @default(autoincrement())
+  quantity  Int?
+  code      String    @unique
   discount  Int
-  isUsed    Boolean  @default(false)
-  expiredAt DateTime
-  createdAt DateTime @default(now())
+  isUsed    Int       @default(0)
+  startDate DateTime?
+  endDate   DateTime?
+  expiredAt DateTime?
+  createdAt DateTime  @default(now())
 
-  Users        User          @relation(fields: [userId], references: [usersId])
+  eventId      Int?
+  event        Event?        @relation(fields: [eventId], references: [eventId])
   transactions Transaction[]
 }
 
 model Voucher {
   voucherId      Int      @id @default(autoincrement())
-  eventId        Int
+  discount       Int
   code           String
   voucherAmmount Int
   expiredAt      DateTime
   createdAt      DateTime @default(now())
 
-  event        Event         @relation(fields: [eventId], references: [eventId])
+  userId       Int
+  user         User          @relation(fields: [userId], references: [usersId])
   transactions Transaction[]
 }
 

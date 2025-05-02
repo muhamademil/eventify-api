@@ -16,5 +16,15 @@ export class AuthRouter {
       "/auth/login",
       this.authController.login.bind(this.authController)
     );
+
+    this.router.post(
+      "/auth/forgot-password",
+      this.authController.forgotPassword.bind(this.authController)
+    );
+
+    this.router.post(
+      "/auth/reset-password",
+      this.authController.resetPassword.bind(this.authController)
+    );
   }
 }
