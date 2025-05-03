@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { EventService } from "../services/event.service";
 import { EventInput, EventQuery } from "../models/interface";
-import { CoupondService } from "../coupond/coupond.service";
+import { CoupondService } from "../services/coupond.service";
 
 export class EventController {
   private eventService = new EventService();
@@ -49,10 +49,10 @@ export class EventController {
 
       // Jika body berisi kupon, buat kupon
       if (coupon && coupon.discount) {
-        createdCoupond = await this.coupondService.create(
-          promotor.usersId, // Pass the userId
-          coupon.discount // Pass the discount
-        );
+        createdCoupond = await this.coupondService.create({
+          usersId: promotor.usersId, // Pass the userId
+          discount: coupon.discount, // Pass the discount
+        });
       }
 
       res.status(201).json({

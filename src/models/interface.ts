@@ -21,7 +21,7 @@ export interface EventInput {
 export interface CoupondInput {
   code: string;
   discount: number;
-  eventId: number;
+  usersId: number;
 }
 
 export interface TicketInput {
