@@ -26,6 +26,19 @@ export class EventRouter {
       this.eventController.findById.bind(this.eventController)
     );
 
+    this.router.get(
+      "/eventsByPromotor",
+      AuthenticationMiddleware.verifyToken,
+      AuthorizationMiddleware.allowRoles("PROMOTOR"),
+      this.eventController.findAll.bind(this.eventController)
+    );
+    this.router.get(
+      "/eventsByPromotor/:id",
+      AuthenticationMiddleware.verifyToken,
+      AuthorizationMiddleware.allowRoles("PROMOTOR"),
+      this.eventController.findById.bind(this.eventController)
+    );
+
     this.router.post(
       "/create-events",
       AuthenticationMiddleware.verifyToken,
