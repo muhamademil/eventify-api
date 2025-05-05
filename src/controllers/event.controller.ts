@@ -73,12 +73,15 @@ export class EventController {
 
   public async findAll(req: Request, res: Response): Promise<void> {
     try {
+      const promotorId = req.user.usersId;
+
       const query: EventQuery = {
         search: req.query.search as string,
         categoryEvents: req.query.categoryEvents as string,
         locationEvents: req.query.locationEvents as string,
         page: req.query.page ? parseInt(req.query.page as string) : 1,
         limit: req.query.limit ? parseInt(req.query.limit as string) : 10,
+        promotorId,
       };
       const result = await this.eventService.findAll(query);
       res.status(200).json({
@@ -94,22 +97,25 @@ export class EventController {
 
   public async findById(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const result = await this.eventService.findById(Number(id));
+      const promotorId = parseInt(req.params.promotorId); // Mengambil promotorId dari path parameter
 
-      if (!result) {
+      // Mengambil semua event berdasarkan promotorId
+      const result = await this.eventService.findById(promotorId);
+
+      if (!result || result.length === 0) {
         res.status(404).json({
-          message: "Event not found",
+          message: "No events found for the specified promoter",
         });
+        return;
       }
 
       res.status(200).json({
         data: result,
       });
     } catch (error) {
-      res.status(404).json({
-        message: "Failed to fetch event",
-        detail: error,
+      res.status(500).json({
+        message: "Failed to fetch events",
+        detail: error.message,
       });
     }
   }

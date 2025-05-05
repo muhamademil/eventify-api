@@ -27,13 +27,14 @@ export class EventRouter {
     );
 
     this.router.get(
-      "/eventsByPromotor",
+      "/promotor/events",
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),
       this.eventController.findAll.bind(this.eventController)
     );
+
     this.router.get(
-      "/eventsByPromotor/:id",
+      "/promotor/events/:promotorId",
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),
       this.eventController.findById.bind(this.eventController)

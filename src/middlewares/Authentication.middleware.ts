@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { JwtUtils } from "../lib/token.config";
 import { User } from "@prisma/client";
-import { UserPayload } from "../models/interface";
 
 export class AuthenticationMiddleware {
   static verifyToken(req: Request, res: Response, next: NextFunction) {

@@ -31,18 +31,22 @@ export class EventService {
     });
   }
 
-  public async findAll(query: EventQuery) {
+  public async findAll(query: EventQuery & {promotorId : number}) {
     const {
       search,
       categoryEvents,
       locationEvents,
       page = 1,
       limit = 10,
+      promotorId,
     } = query;
-    const where: any = {};
+
+    const where: any = {
+      promotorId, // Filter event hanya milik promotor yang sedang login
+    };
 
     if (search) {
-      where.name = {
+      where.nameEvents = {
         contains: search,
         mode: "insensitive",
       };
@@ -56,16 +60,40 @@ export class EventService {
       where.locationEvents = locationEvents;
     }
 
-    return prisma.user.findMany({
+    return prisma.event.findMany({
       where,
       skip: (page - 1) * limit,
       take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        promotor: {
+          select: {
+            usersId: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
     });
   }
 
-  public async findById(eventId: number) {
-    return prisma.event.findUnique({
-      where: { eventId },
+  public async findById(promotorId: number) {
+    return prisma.event.findMany({
+      where: {
+        promotorId, // Filter berdasarkan promotorId
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        promotor: {
+          select: {
+            usersId: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
     });
   }
 
