@@ -37,7 +37,7 @@ export interface EventQuery {
   locationEvents?: string;
   page?: number;
   limit?: number;
-  promotorId:number
+  promotorId?:number
 }
 
 export interface UserPayload {

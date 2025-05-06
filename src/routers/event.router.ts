@@ -19,25 +19,25 @@ export class EventRouter {
   private routes(): void {
     this.router.get(
       "/events",
-      this.eventController.findAll.bind(this.eventController)
+      this.eventController.findAllEventByUser.bind(this.eventController)
     );
     this.router.get(
-      "/events/:id",
-      this.eventController.findById.bind(this.eventController)
+      "/events/:eventId",
+      this.eventController.findEventById.bind(this.eventController)
     );
 
     this.router.get(
       "/promotor/events",
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),
-      this.eventController.findAll.bind(this.eventController)
+      this.eventController.findAllEventByPromotor.bind(this.eventController)
     );
 
     this.router.get(
       "/promotor/events/:promotorId",
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),
-      this.eventController.findById.bind(this.eventController)
+      this.eventController.findAllEventByPromotorId.bind(this.eventController)
     );
 
     this.router.post(
@@ -45,7 +45,7 @@ export class EventRouter {
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),
       ValidationMiddleware.validate({ body: eventSchema.body }),
-      this.eventController.create.bind(this.eventController)
+      this.eventController.createEvent.bind(this.eventController)
     );
 
     this.router.post(
@@ -53,7 +53,7 @@ export class EventRouter {
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),
       ValidationMiddleware.validate({ body: eventSchema.body }),
-      this.eventController.delete.bind(this.eventController)
+      this.eventController.deleteEvent.bind(this.eventController)
     );
 
     this.router.post(
@@ -61,7 +61,7 @@ export class EventRouter {
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),
       ValidationMiddleware.validate({ body: eventSchema.body }),
-      this.eventController.update.bind(this.eventController)
+      this.eventController.updateEvent.bind(this.eventController)
     );
   }
 }

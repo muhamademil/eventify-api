@@ -7,7 +7,7 @@ export class EventController {
   private eventService = new EventService();
   private coupondService = new CoupondService();
 
-  public async create(req: Request, res: Response): Promise<void> {
+  public async createEvent(req: Request, res: Response): Promise<void> {
     try {
       const promotor = req.user;
 
@@ -33,7 +33,7 @@ export class EventController {
       } = req.body;
 
       // Buat event dengan promotorId dari user login
-      const newEvent = await this.eventService.create({
+      const newEvent = await this.eventService.createEvent({
         nameEvents,
         categoryEvents,
         priceEvents,
@@ -71,19 +71,19 @@ export class EventController {
     }
   }
 
-  public async findAll(req: Request, res: Response): Promise<void> {
+  public async findAllEventByPromotor(req: Request, res: Response): Promise<void> {
     try {
       const promotorId = req.user.usersId;
 
-      const query: EventQuery = {
+      const query: EventQuery & { promotorId: number } = {
         search: req.query.search as string,
         categoryEvents: req.query.categoryEvents as string,
         locationEvents: req.query.locationEvents as string,
         page: req.query.page ? parseInt(req.query.page as string) : 1,
         limit: req.query.limit ? parseInt(req.query.limit as string) : 10,
-        promotorId,
+        promotorId: promotorId, // Ensure promotorId is explicitly included
       };
-      const result = await this.eventService.findAll(query);
+      const result = await this.eventService.findAllEventByPromotor(query);
       res.status(200).json({
         data: result,
       });
@@ -95,12 +95,35 @@ export class EventController {
     }
   }
 
-  public async findById(req: Request, res: Response): Promise<void> {
+  public async findAllEventByUser(req: Request, res: Response): Promise<void> {
+    try {
+      // Tidak perlu mengambil promotorId dari auth
+      const query: EventQuery = {
+        search: req.query.search as string,
+        categoryEvents: req.query.categoryEvents as string,
+        locationEvents: req.query.locationEvents as string,
+        page: req.query.page ? parseInt(req.query.page as string) : 1,
+        limit: req.query.limit ? parseInt(req.query.limit as string) : 10,
+        // Hapus promotorId dari query jika tidak perlu autentikasi
+      };
+      const result = await this.eventService.findAllEventByUser(query);
+      res.status(200).json({
+        data: result,
+      });
+    } catch (error) {
+      res.status(404).json({
+        message: "Failed to fetch events",
+        detail: error,
+      });
+    }
+  }
+
+  public async findAllEventByPromotorId(req: Request, res: Response): Promise<void> {
     try {
       const promotorId = parseInt(req.params.promotorId); // Mengambil promotorId dari path parameter
 
       // Mengambil semua event berdasarkan promotorId
-      const result = await this.eventService.findById(promotorId);
+      const result = await this.eventService.findAllEventByPromotorId(promotorId);
 
       if (!result || result.length === 0) {
         res.status(404).json({
@@ -120,11 +143,48 @@ export class EventController {
     }
   }
 
-  public async update(req: Request, res: Response): Promise<void> {
+  public async findEventById(req: Request, res: Response): Promise<void> {
+    try {
+      const eventId = parseInt(req.params.eventId); // Mengambil eventId dari path parameter
+  
+      // Validasi format eventId
+      if (isNaN(eventId)) {
+        res.status(400).json({
+          message: "Invalid event ID format",
+        });
+        return;
+      }
+  
+      // Cari event berdasarkan eventId yang diberikan dalam URL
+      const result = await this.eventService.findAllEventById(eventId);
+  
+      // Jika event tidak ditemukan
+      if (!result) {
+        res.status(404).json({
+          message: "Event not found for the specified ID",
+        });
+        return;
+      }
+  
+      // Mengembalikan hasil pencarian
+      res.status(200).json({
+        data: result,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Failed to fetch event",
+        detail: error.message,
+      });
+    }
+  }
+  
+  
+
+  public async updateEvent(req: Request, res: Response): Promise<void> {
     try {
       const { usersId } = req.params;
       const data: Partial<EventInput> = req.body;
-      const result = await this.eventService.update(Number(usersId), data);
+      const result = await this.eventService.updateEvent(Number(usersId), data);
       res.status(200).json({
         message: "Event updated",
         data: result,
@@ -137,10 +197,10 @@ export class EventController {
     }
   }
 
-  public async delete(req: Request, res: Response): Promise<void> {
+  public async deleteEvent(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const result = await this.eventService.delete(Number(id));
+      const result = await this.eventService.deleteEvent(Number(id));
       res.status(200).json({
         message: "Event deleted",
         data: result,

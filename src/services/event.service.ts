@@ -2,7 +2,7 @@ import { prisma } from "../prisma/client";
 import { EventInput, EventQuery } from "../models/interface";
 
 export class EventService {
-  public async create(
+  public async createEvent(
     data: EventInput & {
       promotorId: number;
       coupon?: { code: string; discount: number };
@@ -31,7 +31,58 @@ export class EventService {
     });
   }
 
-  public async findAll(query: EventQuery & {promotorId : number}) {
+  public async findAllEventByUser(query: EventQuery) {
+    const {
+      search,
+      categoryEvents,
+      locationEvents,
+      page = 1,
+      limit = 10,
+      promotorId, // Bisa tetap ada di parameter, tetapi tidak wajib
+    } = query;
+
+    const where: any = {};
+
+    if (promotorId) {
+      where.promotorId = promotorId; // Filter event hanya milik promotor yang diberikan, jika ada
+    }
+
+    if (search) {
+      where.nameEvents = {
+        contains: search,
+        mode: "insensitive", // Pencarian tanpa memperhatikan huruf besar/kecil
+      };
+    }
+
+    if (categoryEvents) {
+      where.categoryEvents = categoryEvents;
+    }
+
+    if (locationEvents) {
+      where.locationEvents = locationEvents;
+    }
+
+    // Menjalankan query untuk mengambil events
+    return prisma.event.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        promotor: {
+          select: {
+            usersId: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  public async findAllEventByPromotor(
+    query: EventQuery & { promotorId: number }
+  ) {
     const {
       search,
       categoryEvents,
@@ -77,7 +128,7 @@ export class EventService {
     });
   }
 
-  public async findById(promotorId: number) {
+  public async findAllEventByPromotorId(promotorId: number) {
     return prisma.event.findMany({
       where: {
         promotorId, // Filter berdasarkan promotorId
@@ -97,7 +148,13 @@ export class EventService {
     });
   }
 
-  public async update(eventId: number, data: Partial<EventInput>) {
+  public async findAllEventById(eventId: number) {
+    return prisma.event.findUnique({
+      where: { eventId },
+    });
+  }
+
+  public async updateEvent(eventId: number, data: Partial<EventInput>) {
     return prisma.event.update({
       where: { eventId },
       data: {
@@ -106,7 +163,7 @@ export class EventService {
     });
   }
 
-  public async delete(eventId: number) {
+  public async deleteEvent(eventId: number) {
     return prisma.event.delete({
       where: { eventId },
     });
