@@ -6,12 +6,24 @@ export class EventService {
     data: EventInput & {
       promotorId: number;
       coupon?: { code: string; discount: number };
-    }
+    },
+    file?: Express.Multer.File
   ) {
     return await prisma.$transaction(async (tx) => {
+      let imageUrl = data.imgUrl || "";
+      if (file) {
+        if (!file.path) {
+          throw new Error("File uploaded but Cloudinary URL is missing.");
+        }
+        // Pastikan file.path mengandung URL Cloudinary yang valid
+        imageUrl = file.path;
+      }
+
+      // Membuat event baru di database
       const event = await tx.event.create({
         data: {
           ...data,
+          imgUrl: imageUrl,
           startDateEvents: new Date(data.startDateEvents),
           endDateEvents: new Date(data.endDateEvents),
         },
@@ -154,7 +166,14 @@ export class EventService {
     });
   }
 
-  public async updateEvent(eventId: number, data: Partial<EventInput>) {
+  public async updateEvent(
+    eventId: number,
+    data: Partial<EventInput>,
+    file?: Express.Multer.File
+  ) {
+    if (file?.path) {
+      (data as any).imageUrl = file.path;
+    }
     return prisma.event.update({
       where: { eventId },
       data: {

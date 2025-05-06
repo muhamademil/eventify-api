@@ -3,6 +3,8 @@ import { EventController } from "../controllers/event.controller";
 import { ValidationMiddleware } from "../middlewares/validation.middleware";
 import { AuthenticationMiddleware } from "../middlewares/Authentication.middleware";
 import { AuthorizationMiddleware } from "../middlewares/Authorization.middleware";
+import { uploadEventImage } from "../middlewares/fileUPload.middleware";
+import { parseMultipartBody } from "../middlewares/parseMultiPartBody.middleware";
 
 import { eventSchema } from "../lib/validation/event.schema";
 
@@ -44,6 +46,8 @@ export class EventRouter {
       "/create-events",
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),
+      uploadEventImage.single("image"),
+      parseMultipartBody,
       ValidationMiddleware.validate({ body: eventSchema.body }),
       this.eventController.createEvent.bind(this.eventController)
     );
@@ -56,10 +60,11 @@ export class EventRouter {
       this.eventController.deleteEvent.bind(this.eventController)
     );
 
-    this.router.post(
+    this.router.put(
       "/update-events",
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),
+      uploadEventImage.single("image"),
       ValidationMiddleware.validate({ body: eventSchema.body }),
       this.eventController.updateEvent.bind(this.eventController)
     );

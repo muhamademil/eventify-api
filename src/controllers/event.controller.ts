@@ -10,6 +10,7 @@ export class EventController {
   public async createEvent(req: Request, res: Response): Promise<void> {
     try {
       const promotor = req.user;
+      const file = req.file;
 
       if (!promotor?.usersId) {
         res.status(400).json({
@@ -23,6 +24,7 @@ export class EventController {
       const {
         nameEvents,
         categoryEvents,
+        imgUrl,
         priceEvents,
         descriptionEvents,
         locationEvents,
@@ -33,17 +35,21 @@ export class EventController {
       } = req.body;
 
       // Buat event dengan promotorId dari user login
-      const newEvent = await this.eventService.createEvent({
-        nameEvents,
-        categoryEvents,
-        priceEvents,
-        descriptionEvents,
-        locationEvents,
-        startDateEvents,
-        endDateEvents,
-        availableSeats,
-        promotorId: promotor.usersId,
-      });
+      const newEvent = await this.eventService.createEvent(
+        {
+          nameEvents,
+          categoryEvents,
+          priceEvents,
+          imgUrl,
+          descriptionEvents,
+          locationEvents,
+          startDateEvents,
+          endDateEvents,
+          availableSeats :  Number(availableSeats),
+          promotorId: promotor.usersId,
+        },
+        file
+      );
 
       let createdCoupond = null;
 
@@ -71,7 +77,10 @@ export class EventController {
     }
   }
 
-  public async findAllEventByPromotor(req: Request, res: Response): Promise<void> {
+  public async findAllEventByPromotor(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       const promotorId = req.user.usersId;
 
@@ -118,12 +127,17 @@ export class EventController {
     }
   }
 
-  public async findAllEventByPromotorId(req: Request, res: Response): Promise<void> {
+  public async findAllEventByPromotorId(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       const promotorId = parseInt(req.params.promotorId); // Mengambil promotorId dari path parameter
 
       // Mengambil semua event berdasarkan promotorId
-      const result = await this.eventService.findAllEventByPromotorId(promotorId);
+      const result = await this.eventService.findAllEventByPromotorId(
+        promotorId
+      );
 
       if (!result || result.length === 0) {
         res.status(404).json({
@@ -146,7 +160,7 @@ export class EventController {
   public async findEventById(req: Request, res: Response): Promise<void> {
     try {
       const eventId = parseInt(req.params.eventId); // Mengambil eventId dari path parameter
-  
+
       // Validasi format eventId
       if (isNaN(eventId)) {
         res.status(400).json({
@@ -154,10 +168,10 @@ export class EventController {
         });
         return;
       }
-  
+
       // Cari event berdasarkan eventId yang diberikan dalam URL
       const result = await this.eventService.findAllEventById(eventId);
-  
+
       // Jika event tidak ditemukan
       if (!result) {
         res.status(404).json({
@@ -165,7 +179,7 @@ export class EventController {
         });
         return;
       }
-  
+
       // Mengembalikan hasil pencarian
       res.status(200).json({
         data: result,
@@ -177,8 +191,6 @@ export class EventController {
       });
     }
   }
-  
-  
 
   public async updateEvent(req: Request, res: Response): Promise<void> {
     try {

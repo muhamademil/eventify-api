@@ -3,8 +3,16 @@ import { UserRouter } from "./routers/user.router";
 import { AuthRouter } from "./routers/auth.router";
 import { EventRouter } from "./routers/event.router";
 import { TicketRouter } from "./routers/ticket.router";
+import dotenv from "dotenv";
 
 import cors from "cors";
+
+dotenv.config();
+console.log('Cloudinary Config:', {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 class Server {
   private app: Application;
@@ -19,7 +27,7 @@ class Server {
 
   private middlewares(): void {
     this.app.use(
-      cors({  
+      cors({
         origin: "*",
       })
     );

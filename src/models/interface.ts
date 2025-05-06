@@ -10,6 +10,7 @@ export interface UserInput {
 export interface EventInput {
   nameEvents: string;
   categoryEvents: "MUSIC" | "SPORTS" | "FOOD" | "BEAUTY";
+  imgUrl: string;
   priceEvents: string;
   descriptionEvents: string;
   locationEvents: "JAKARTA" | "BANDUNG" | "SURABAYA" | "BALI";
@@ -37,7 +38,7 @@ export interface EventQuery {
   locationEvents?: string;
   page?: number;
   limit?: number;
-  promotorId?:number
+  promotorId?: number;
 }
 
 export interface UserPayload {

@@ -43,6 +43,7 @@ model Event {
   promotorId        Int
   nameEvents        String
   categoryEvents    Category
+  imgUrl            String @default("")
   priceEvents       String
   descriptionEvents String
   locationEvents    Location
