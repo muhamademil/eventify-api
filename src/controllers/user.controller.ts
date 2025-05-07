@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { UserInput } from "../models/interface";
-
-import { Prisma } from "@prisma/client";
+import { prisma } from "../prisma/client";
 
 export class UserController {
   private userService = new UserService();
@@ -10,6 +9,14 @@ export class UserController {
   public register = async (req: Request, res: Response): Promise<void> => {
     try {
       const data: UserInput = req.body;
+
+      const checkUser = await prisma.user.findUnique({
+        where: { email: data.email },
+      });
+
+      if (checkUser) {
+        throw new Error("User already registered");
+      }
 
       // Validasi role sebelum mengirim ke service
       if (data.role && !["USER", "PROMOTOR"].includes(data.role)) {

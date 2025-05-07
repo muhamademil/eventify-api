@@ -25,6 +25,13 @@ export interface CoupondInput {
   usersId: number;
 }
 
+export interface VoucherInput {
+  userId: number;
+  discount: number;
+  voucherAmount: number;
+  expiredAt: Date;
+}
+
 export interface TicketInput {
   ticketType: "PAID" | "UNPAID";
   ticketPrice: number;

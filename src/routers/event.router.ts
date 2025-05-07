@@ -4,7 +4,7 @@ import { ValidationMiddleware } from "../middlewares/validation.middleware";
 import { AuthenticationMiddleware } from "../middlewares/Authentication.middleware";
 import { AuthorizationMiddleware } from "../middlewares/Authorization.middleware";
 import { uploadEventImage } from "../middlewares/fileUPload.middleware";
-import { parseMultipartBody } from "../middlewares/parseMultiPartBody.middleware";
+import { parseMultipartBody } from "../middlewares/parseMultipartBody.middleware"; 
 
 import { eventSchema } from "../lib/validation/event.schema";
 

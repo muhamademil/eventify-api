@@ -15,7 +15,7 @@ export class CoupondService {
       if (!existing) break;
     }
 
-    return prisma.coupond.create({  
+    return prisma.coupond.create({
       data: {
         ...data,
         code: coupondCode,

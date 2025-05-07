@@ -10,5 +10,5 @@ export function generateCoupondCode(): string {
     randomPart += characters[randomIndex];
   }
 
-  return `DISC${randomPart}`;
+  return `COU${randomPart}`;
 }

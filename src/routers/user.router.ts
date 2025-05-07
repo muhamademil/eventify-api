@@ -4,7 +4,7 @@ import { ValidationMiddleware } from "../middlewares/validation.middleware";
 import { AuthenticationMiddleware } from "../middlewares/Authentication.middleware";
 import { AuthorizationMiddleware } from "../middlewares/Authorization.middleware";
 
-import { userSchema } from "../lib/validation/validation.schema";
+import { userSchemaUpdate, userSchemaRegister } from "../lib/validation/validation.schema";
 
 export class UserRouter {
   public router: Router;
@@ -19,15 +19,15 @@ export class UserRouter {
   private routes(): void {
     this.router.post(
       "/users",
-      ValidationMiddleware.validate({ body: userSchema.body }),
+       ValidationMiddleware.validate({ body: userSchemaRegister.body }),
       this.userController.register.bind(this.userController)
     );
     this.router.put(
       "/users/:usersId",
       AuthenticationMiddleware.verifyToken,
       ValidationMiddleware.validate({
-        body: userSchema.body,
-        params: userSchema.params,
+        body: userSchemaUpdate.body,
+        params: userSchemaUpdate.params,
         partial: true,
       }),
       this.userController.update.bind(this.userController)

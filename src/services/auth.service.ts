@@ -13,7 +13,7 @@ export class AuthService {
 
     // pengecekan pertama : kalau gagal ditolak
     if (!user) {
-      return "Invalid credentials"; // Pesan error yang lebih aman
+      throw new Error("Invalid credentials"); // Lempar error agar status 400/500
     }
 
     // Cek kecocokan password tanpa men-hash password baru
@@ -21,7 +21,7 @@ export class AuthService {
 
     // pengecekan kedua : kalau gagal ditolak
     if (!isValid) {
-      return "Invalid credentials Bro!"; // Pesan error yang lebih aman
+      throw new Error("Invalid credentials"); // Tetap lempar error
     }
 
     // Pembatasan Role jika `requiredRole` diisi

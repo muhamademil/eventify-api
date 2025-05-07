@@ -1,7 +1,8 @@
 import { prisma } from "../prisma/client";
 import { UserInput } from "../models/interface";
 import { generateReferralCodeFromName } from "../utils/refferal.utils";
-import { CoupondService } from "./coupond.service";
+// import { CoupondService } from "./coupond.service";
+import { VoucherService } from "./voucher.service";
 import bcrypt from "bcrypt";
 
 export class UserService {
@@ -9,6 +10,8 @@ export class UserService {
     // Membuat Referral Code yang Unik
     let referralCode = generateReferralCodeFromName(data.name);
     let isUnique = false;
+
+    
 
     // Cek apakah referral code sudah ada di database
     while (!isUnique) {
@@ -65,10 +68,12 @@ export class UserService {
 
     // Memberikan Kupon Diskon kepada Pengguna Baru
     if (data.referredBy) {
-      const coupondService = new CoupondService();
-      await coupondService.create({
-        usersId: newUser.usersId, // Pastikan properti ini sesuai dengan CoupondInput
-        discount: 10, // Diskon yang ingin diterapkan
+      const voucherService = new VoucherService();
+      await voucherService.create({
+        userId: newUser.usersId,
+        discount: 10, // Example discount value
+        expiredAt: new Date(new Date().setMonth(new Date().getMonth() + 1)), // Example expiration date
+        voucherAmount: 50000, // Example voucher amount
       });
     }
 

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Voucher" ADD COLUMN     "isUsed" INTEGER NOT NULL DEFAULT 0;

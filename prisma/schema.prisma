@@ -43,7 +43,7 @@ model Event {
   promotorId        Int
   nameEvents        String
   categoryEvents    Category
-  imgUrl            String @default("")
+  imgUrl            String   @default("")
   priceEvents       String
   descriptionEvents String
   locationEvents    Location
@@ -109,12 +109,13 @@ model Coupond {
 }
 
 model Voucher {
-  voucherId      Int      @id @default(autoincrement())
-  discount       Int
-  code           String
-  voucherAmmount Int
-  expiredAt      DateTime
-  createdAt      DateTime @default(now())
+  voucherId     Int      @id @default(autoincrement())
+  discount      Int
+  code          String   @unique
+  isUsed        Int      @default(0)
+  voucherAmount Int
+  expiredAt     DateTime
+  createdAt     DateTime @default(now())
 
   userId       Int
   user         User          @relation(fields: [userId], references: [usersId])
