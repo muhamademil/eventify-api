@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/auth.controller";
+import { AuthenticationMiddleware } from "../middlewares/Authentication.middleware";
 
 export class AuthRouter {
   public router: Router;
@@ -15,6 +16,12 @@ export class AuthRouter {
     this.router.post(
       "/auth/login",
       this.authController.login.bind(this.authController)
+    );
+
+    this.router.get(
+      "/auth/profile",
+      AuthenticationMiddleware.verifyToken,
+      this.authController.getProfile.bind(this.authController)
     );
 
     this.router.post(

@@ -67,6 +67,25 @@ export class AuthService {
     return { message: "Token reset password berhasil dikirim ke email" };
   }
 
+  async getUserById(userId: number) {
+    const user = await prisma.user.findUnique({
+      where: { usersId: userId },
+      select: {
+        usersId: true,
+        name: true,
+        email: true,
+        profileImage: true,
+        role: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return user;
+  }
+
   public async resetPassword(token: string, newPassword: string) {
     // 1. Cari user berdasarkan token dan cek apakah masih berlaku
     const user = await prisma.user.findFirst({

@@ -227,8 +227,8 @@ export class EventController {
 
   public async deleteEvent(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const result = await this.eventService.deleteEvent(Number(id));
+      const { eventId } = req.body;
+      const result = await this.eventService.deleteEvent(Number(eventId));
       res.status(200).json({
         message: "Event deleted",
         data: result,

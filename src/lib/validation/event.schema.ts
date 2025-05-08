@@ -12,3 +12,9 @@ export const eventSchema = {
     availableSeats: zod.number().int().positive(),
   }),
 };
+
+export const deleteEventSchema = {
+  body: zod.object({
+    eventId: zod.number().int().positive(),
+  }),
+};

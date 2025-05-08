@@ -60,6 +60,23 @@ export class AuthController {
     }
   }
 
+  public async getProfile(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.user?.usersId; // pastikan Middleware verifyToken menaruh user di req.user
+      if (!userId) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+  
+      const user = await this.authService.getUserById(Number(userId));
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch profile", detail: error });
+    }
+  }
+  
+  
+
   public async forgotPassword(req: Request, res: Response): Promise<void> {
     try {
       const { email } = req.body;

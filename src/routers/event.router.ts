@@ -6,7 +6,7 @@ import { AuthorizationMiddleware } from "../middlewares/Authorization.middleware
 import { uploadEventImage } from "../middlewares/fileUPload.middleware";
 import { parseMultipartBody } from "../middlewares/parseMultipartBody.middleware"; 
 
-import { eventSchema } from "../lib/validation/event.schema";
+import { deleteEventSchema, eventSchema } from "../lib/validation/event.schema";
 
 export class EventRouter {
   public router: Router;
@@ -56,7 +56,7 @@ export class EventRouter {
       "/delete-events",
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),
-      ValidationMiddleware.validate({ body: eventSchema.body }),
+      ValidationMiddleware.validate({ body: deleteEventSchema.body }),
       this.eventController.deleteEvent.bind(this.eventController)
     );
 
