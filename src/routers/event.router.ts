@@ -52,7 +52,7 @@ export class EventRouter {
       this.eventController.createEvent.bind(this.eventController)
     );
 
-    this.router.post(
+    this.router.delete(
       "/delete-events",
       AuthenticationMiddleware.verifyToken,
       AuthorizationMiddleware.allowRoles("PROMOTOR"),

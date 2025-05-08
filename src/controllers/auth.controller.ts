@@ -23,24 +23,40 @@ export class AuthController {
       const result = await this.authService.login(email, password);
 
       // Jika login gagal
-      if (result === "Invalid credentials") {
+      if (result === "===Invalid credentials===") {
         res.status(401).json({
           message: "Unauthorized: Invalid credentials",
         });
         return;
       }
-
       // Jika login sukses
       res.status(200).json({
         data: result, // Token atau data user bisa dikirim di sini
       });
-    } catch (error) {
-      console.error("Login Error: ", error);
 
-      // Jangan kirimkan error stack secara langsung
-      res.status(500).json({
-        message: "Internal Server Error",
-      });
+    } catch (error: any) {
+      console.error("Login Error:", error.message);
+  
+      //Kasus salah kredensial
+      if (error.message === "Invalid credentials") {
+        res.status(401).json({
+          message: "Unauthorized: Invalid credentials, please check Email & Password",
+        });
+      }
+  
+      //Kasus role tidak sesuai (kalau ada pembatasan role dari login())
+      else if (error.message.startsWith("Access denied")) {
+        res.status(403).json({
+          message: error.message, // contoh: "Access denied: Required role is PROMOTOR"
+        });
+      }
+  
+      //Error tak terduga lainnya
+      else {
+        res.status(500).json({
+          message: "Internal Server Error",
+        });
+      }
     }
   }
 

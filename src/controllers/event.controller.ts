@@ -34,6 +34,21 @@ export class EventController {
         coupon, // opsional
       } = req.body;
 
+      // Parsing tanggal (convert to ISO format if necessary)
+      const startDate = new Date(startDateEvents); // Pastikan startDateEvents di-parse sebagai objek Date
+      const endDate = new Date(endDateEvents); // Pastikan endDateEvents di-parse sebagai objek Date
+
+      // Validasi apakah tanggal valid
+      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        console.log("=== start Event ===", startDate)
+        res.status(400).json({
+          message: "Invalid date format",
+          detail:
+            "Please provide valid start and end dates in the correct format.",
+        });
+        return;
+      }
+
       // Buat event dengan promotorId dari user login
       const newEvent = await this.eventService.createEvent(
         {
@@ -43,9 +58,10 @@ export class EventController {
           imgUrl,
           descriptionEvents,
           locationEvents,
-          startDateEvents,
-          endDateEvents,
-          availableSeats :  Number(availableSeats),
+          startDateEvents: startDate.toISOString(),
+          endDateEvents: endDate.toISOString(),
+          coupon,
+          availableSeats: Number(availableSeats),
           promotorId: promotor.usersId,
         },
         file

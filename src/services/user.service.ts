@@ -11,8 +11,6 @@ export class UserService {
     let referralCode = generateReferralCodeFromName(data.name);
     let isUnique = false;
 
-    
-
     // Cek apakah referral code sudah ada di database
     while (!isUnique) {
       const existing = await prisma.user.findUnique({
